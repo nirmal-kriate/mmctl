@@ -627,3 +627,58 @@ func (s *MmctlUnitTestSuite) TestConfigReloadCmd() {
 		s.Require().NotNil(err)
 	})
 }
+
+func (s *MmctlUnitTestSuite) TestConfigSubpathCmd() {
+	s.Run("Should update the subpath received as an argument", func() {
+		printer.Clean()
+
+		path := "/newpath"
+		cmd := &cobra.Command{}
+		cmd.Flags().String("path", path, "")
+
+		s.client.
+			EXPECT().
+			UpdateConfigSubpath(path).
+			Return(true, &model.Response{Error: nil}).
+			Times(1)
+
+		err := configSubpathCmdF(s.client, cmd, []string{})
+		s.Require().Nil(err)
+		s.Len(printer.GetLines(), 1)
+		s.Len(printer.GetErrorLines(), 0)
+	})
+
+	s.Run("Should update the subpath without an argument", func() {
+		printer.Clean()
+
+		s.client.
+			EXPECT().
+			UpdateConfigSubpath("").
+			Return(true, &model.Response{Error: nil}).
+			Times(1)
+
+		err := configSubpathCmdF(s.client, &cobra.Command{}, []string{})
+		s.Require().Nil(err)
+		s.Len(printer.GetLines(), 1)
+		s.Len(printer.GetErrorLines(), 0)
+	})
+
+	s.Run("Should fail on error when updating subpath", func() {
+		printer.Clean()
+
+		path := "/newpath"
+		cmd := &cobra.Command{}
+		cmd.Flags().String("path", path, "")
+
+		s.client.
+			EXPECT().
+			UpdateConfigSubpath(path).
+			Return(true, &model.Response{Error: &model.AppError{Message: "Error"}}).
+			Times(1)
+
+		err := configSubpathCmdF(s.client, cmd, []string{})
+		s.Require().NotNil(err)
+		s.Len(printer.GetLines(), 0)
+		s.Len(printer.GetErrorLines(), 0)
+	})
+}

@@ -76,6 +76,7 @@ type Client interface {
 	DeleteCommand(commandId string) (bool, *model.Response)
 	GetConfig() (*model.Config, *model.Response)
 	UpdateConfig(*model.Config) (*model.Config, *model.Response)
+	UpdateConfigSubpath(string) (bool, *model.Response)
 	PatchConfig(*model.Config) (*model.Config, *model.Response)
 	ReloadConfig() (bool, *model.Response)
 	SyncLdap() (bool, *model.Response)

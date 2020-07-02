@@ -1164,6 +1164,21 @@ func (mr *MockClientMockRecorder) UpdateConfig(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateConfig", reflect.TypeOf((*MockClient)(nil).UpdateConfig), arg0)
 }
 
+// UpdateConfigSubpath mocks base method
+func (m *MockClient) UpdateConfigSubpath(arg0 string) (bool, *model.Response) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateConfigSubpath", arg0)
+	ret0, _ := ret[0].(bool)
+	ret1, _ := ret[1].(*model.Response)
+	return ret0, ret1
+}
+
+// UpdateConfigSubpath indicates an expected call of UpdateConfigSubpath
+func (mr *MockClientMockRecorder) UpdateConfigSubpath(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateConfigSubpath", reflect.TypeOf((*MockClient)(nil).UpdateConfigSubpath), arg0)
+}
+
 // UpdateTeam mocks base method
 func (m *MockClient) UpdateTeam(arg0 *model.Team) (*model.Team, *model.Response) {
 	m.ctrl.T.Helper()

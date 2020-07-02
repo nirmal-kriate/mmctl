@@ -83,8 +83,21 @@ var ConfigReloadCmd = &cobra.Command{
 	RunE:    withClient(configReloadCmdF),
 }
 
+var ConfigSubpathCmd = &cobra.Command{
+	Use:   "subpath",
+	Short: "Update client asset loading to use the configured subpath",
+	Long:  "Update the hard-coded production client asset paths to take into account Mattermost running on a subpath.",
+	Example: `  config subpath
+  config subpath --path /mattermost
+  config subpath --path /`,
+	Args: cobra.NoArgs,
+	RunE: withClient(configSubpathCmdF),
+}
+
 func init() {
 	ConfigResetCmd.Flags().Bool("confirm", false, "Confirm you really want to reset all configuration settings to its default value")
+	ConfigSubpathCmd.Flags().String("path", "", "Optional subpath; defaults to value in SiteURL")
+
 	ConfigCmd.AddCommand(
 		ConfigGetCmd,
 		ConfigSetCmd,
@@ -92,6 +105,7 @@ func init() {
 		ConfigResetCmd,
 		ConfigShowCmd,
 		ConfigReloadCmd,
+		ConfigSubpathCmd,
 	)
 	RootCmd.AddCommand(ConfigCmd)
 }
@@ -423,6 +437,18 @@ func configReloadCmdF(c client.Client, _ *cobra.Command, _ []string) error {
 	if response.Error != nil {
 		return response.Error
 	}
+
+	return nil
+}
+
+func configSubpathCmdF(c client.Client, cmd *cobra.Command, _ []string) error {
+	path, _ := cmd.Flags().GetString("path")
+
+	if _, res := c.UpdateConfigSubpath(path); res.Error != nil {
+		return res.Error
+	}
+
+	printer.Print("Config subpath successfully modified")
 
 	return nil
 }
